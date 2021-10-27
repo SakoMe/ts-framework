@@ -459,7 +459,83 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"7buRX":[function(require,module,exports) {
-console.log('hello');
+var _user = require("./models/User");
+const user = new _user.User({
+    name: 'Bob',
+    age: 20
+});
+user.on('change', ()=>console.log('change')
+);
+user.on('click', ()=>console.log('click')
+);
+user.on('save', ()=>console.log('saved')
+);
+user.trigger('change');
+user.trigger('click');
+user.trigger('save');
+
+},{"./models/User":"asuxU"}],"asuxU":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "User", ()=>User
+);
+class User {
+    constructor(data){
+        this.data = data;
+        this.events = {
+        };
+    }
+    get(propName) {
+        return this.data[propName];
+    }
+    set(update) {
+        this.data = {
+            ...this.data,
+            ...update
+        };
+    }
+    on(event, callback) {
+        const handlers = this.events[event] || [];
+        handlers.push(callback);
+        this.events[event] = handlers;
+    }
+    trigger(event) {
+        const handlers = this.events[event];
+        if (!handlers || handlers.length === 0) return;
+        handlers.forEach((callback)=>callback()
+        );
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"ciiiV":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
 },{}]},["fUE9V","7buRX"], "7buRX", "parcelRequired1cb")
 
