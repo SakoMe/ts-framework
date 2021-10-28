@@ -461,7 +461,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"7buRX":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new _user.User({
-    name: 'Hello',
+    name: 'Bob',
     age: 20
 });
 user.events.on('change', ()=>console.log('changed')
@@ -485,35 +485,93 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "User", ()=>User
 );
-var _axios = require("axios");
-var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _attributes = require("./Attributes");
 var _eventing = require("./Eventing");
+var _sync = require("./Sync");
+const rootUrl = 'http://localhost:3000/users';
 class User {
-    constructor(data){
-        this.data = data;
+    constructor(attrs){
         this.events = new _eventing.Eventing();
-    }
-    get(propName) {
-        return this.data[propName];
-    }
-    set(update) {
-        this.data = {
-            ...this.data,
-            ...update
-        };
-    }
-    async fetch() {
-        const response = await _axiosDefault.default.get(`http://localhost:3000/users/${this.get('id')}`);
-        this.set(response.data);
-    }
-    save() {
-        const id = this.get('id');
-        if (id) _axiosDefault.default.put(`http://localhost:3000/users/${id}`, this.data);
-        else _axiosDefault.default.post('http://localhost:3000/users/', this.data);
+        this.sync = new _sync.Sync(rootUrl);
+        this.attribues = new _attributes.Attributes(attrs);
     }
 }
 
-},{"axios":"1IeuP","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./Eventing":"fq8k6"}],"1IeuP":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./Eventing":"fq8k6","./Sync":"eTYtj","./Attributes":"52MJY"}],"ciiiV":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fq8k6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Eventing", ()=>Eventing
+);
+class Eventing {
+    on(event, callback) {
+        const handlers = this.events[event] || [];
+        handlers.push(callback);
+        this.events[event] = handlers;
+    }
+    trigger(event) {
+        const handlers = this.events[event];
+        if (!handlers || handlers.length === 0) return;
+        handlers.forEach((callback)=>callback()
+        );
+    }
+    constructor(){
+        this.events = {
+        };
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"eTYtj":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Sync", ()=>Sync
+);
+var _axios = require("axios");
+var _axiosDefault = parcelHelpers.interopDefault(_axios);
+class Sync {
+    constructor(rootUrl){
+        this.rootUrl = rootUrl;
+    }
+    fetch(id) {
+        return _axiosDefault.default.get(`${this.rootUrl}/${id}`);
+    }
+    save(data) {
+        const { id  } = data;
+        if (id) return _axiosDefault.default.put(`${this.rootUrl}/${id}`, data);
+        else return _axiosDefault.default.post(this.rootUrl, data);
+    }
+}
+
+},{"axios":"1IeuP","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"1IeuP":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 
 },{"./lib/axios":"ePOwX"}],"ePOwX":[function(require,module,exports) {
@@ -2071,56 +2129,20 @@ module.exports = CancelToken;
     return typeof payload === 'object' && payload.isAxiosError === true;
 };
 
-},{}],"ciiiV":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"fq8k6":[function(require,module,exports) {
+},{}],"52MJY":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Eventing", ()=>Eventing
+parcelHelpers.export(exports, "Attributes", ()=>Attributes
 );
-class Eventing {
-    on(event, callback) {
-        const handlers = this.events[event] || [];
-        handlers.push(callback);
-        this.events[event] = handlers;
+class Attributes {
+    constructor(data){
+        this.data = data;
     }
-    trigger(event) {
-        const handlers = this.events[event];
-        if (!handlers || handlers.length === 0) return;
-        handlers.forEach((callback)=>callback()
-        );
+    get(key) {
+        return this.data[key];
     }
-    constructor(){
-        this.events = {
-        };
+    set(update) {
+        Object.assign(this.data, update);
     }
 }
 

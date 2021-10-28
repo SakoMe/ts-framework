@@ -1,6 +1,6 @@
 import { User } from './models/User';
 
-const user = new User({ name: 'Hello', age: 20 });
+const user = new User({ name: 'Bob', age: 20 });
 
 user.events.on('change', () => console.log('changed'));
 
