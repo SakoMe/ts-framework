@@ -464,9 +464,11 @@ const user = new _user.User({
     name: 'Bob',
     age: 20
 });
-user.events.on('change', ()=>console.log('changed')
+console.log(user);
+console.log(user.get('name'));
+user.on('change', ()=>console.log('Changed')
 );
-user.events.trigger('change'); // user.set({ name: 'Changed', age: 999 });
+user.trigger('change'); // user.set({ name: 'Changed', age: 999 });
  // user.save();
  // const userTWo = new User({ name: 'Jack', age: 100 });
  // userTWo.save();
@@ -494,6 +496,15 @@ class User {
         this.events = new _eventing.Eventing();
         this.sync = new _sync.Sync(rootUrl);
         this.attribues = new _attributes.Attributes(attrs);
+    }
+    get on() {
+        return this.events.on;
+    }
+    get trigger() {
+        return this.events.trigger;
+    }
+    get get() {
+        return this.attribues.get;
     }
 }
 
@@ -533,19 +544,19 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Eventing", ()=>Eventing
 );
 class Eventing {
-    on(event, callback) {
-        const handlers = this.events[event] || [];
-        handlers.push(callback);
-        this.events[event] = handlers;
-    }
-    trigger(event) {
-        const handlers = this.events[event];
-        if (!handlers || handlers.length === 0) return;
-        handlers.forEach((callback)=>callback()
-        );
-    }
     constructor(){
         this.events = {
+        };
+        this.on = (event, callback)=>{
+            const handlers = this.events[event] || [];
+            handlers.push(callback);
+            this.events[event] = handlers;
+        };
+        this.trigger = (event)=>{
+            const handlers = this.events[event];
+            if (!handlers || handlers.length === 0) return;
+            handlers.forEach((callback)=>callback()
+            );
         };
     }
 }
@@ -2137,12 +2148,12 @@ parcelHelpers.export(exports, "Attributes", ()=>Attributes
 class Attributes {
     constructor(data){
         this.data = data;
-    }
-    get(key) {
-        return this.data[key];
-    }
-    set(update) {
-        Object.assign(this.data, update);
+        this.get = (key)=>{
+            return this.data[key];
+        };
+        this.set = (update)=>{
+            Object.assign(this.data, update);
+        };
     }
 }
 
