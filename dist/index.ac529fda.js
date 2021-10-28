@@ -461,28 +461,12 @@ function hmrAcceptRun(bundle, id) {
 },{}],"7buRX":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new _user.User({
-    id: 1
+    name: 'Super Duper Name',
+    age: 999
 });
-console.log(user);
-user.set({
-    name: 'New Name'
-});
-console.log(user.get('name'));
-user.on('change', ()=>console.log('Changed')
-); // user.trigger('change');
- // user.set({ name: 'Changed', age: 999 });
- // user.save();
- // const userTWo = new User({ name: 'Jack', age: 100 });
- // userTWo.save();
- // user.on('change', () => console.log('change'));
- // user.on('click', () => console.log('click'));
- // user.on('save', () => console.log('saved'));
- // user.trigger('change');
- // user.trigger('click');
- // user.trigger('save');
- // import axios from 'axios';
- // const URL = 'http://localhost:3000/users';
- // axios.get(`${URL}/2`);
+user.on('save', ()=>console.log(user)
+);
+user.save();
 
 },{"./models/User":"asuxU"}],"asuxU":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -510,7 +494,19 @@ class User {
     }
     set(update) {
         this.attribues.set(update);
-        this.trigger('change');
+        this.events.trigger('change');
+    }
+    fetch() {
+        const id = this.get('id');
+        if (typeof id !== 'number') throw new Error('Can not fetch without an id');
+        this.sync.fetch(id).then((response)=>this.set(response.data)
+        ).catch(()=>this.trigger('error')
+        );
+    }
+    save() {
+        this.sync.save(this.attribues.getAll()).then(()=>this.events.trigger('save')
+        ).catch(()=>this.trigger('error')
+        );
     }
 }
 
@@ -2159,6 +2155,9 @@ class Attributes {
         };
         this.set = (update)=>{
             Object.assign(this.data, update);
+        };
+        this.getAll = ()=>{
+            return this.data;
         };
     }
 }
