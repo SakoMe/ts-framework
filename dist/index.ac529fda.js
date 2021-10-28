@@ -461,8 +461,12 @@ function hmrAcceptRun(bundle, id) {
 },{}],"7buRX":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new _user.User({
-    id: 1
-}); // user.set({ name: 'Changed', age: 999 });
+    name: 'Hello',
+    age: 20
+});
+user.events.on('change', ()=>console.log('changed')
+);
+user.events.trigger('change'); // user.set({ name: 'Changed', age: 999 });
  // user.save();
  // const userTWo = new User({ name: 'Jack', age: 100 });
  // userTWo.save();
@@ -483,11 +487,11 @@ parcelHelpers.export(exports, "User", ()=>User
 );
 var _axios = require("axios");
 var _axiosDefault = parcelHelpers.interopDefault(_axios);
+var _eventing = require("./Eventing");
 class User {
     constructor(data){
         this.data = data;
-        this.events = {
-        };
+        this.events = new _eventing.Eventing();
     }
     get(propName) {
         return this.data[propName];
@@ -497,17 +501,6 @@ class User {
             ...this.data,
             ...update
         };
-    }
-    on(event, callback) {
-        const handlers = this.events[event] || [];
-        handlers.push(callback);
-        this.events[event] = handlers;
-    }
-    trigger(event) {
-        const handlers = this.events[event];
-        if (!handlers || handlers.length === 0) return;
-        handlers.forEach((callback)=>callback()
-        );
     }
     async fetch() {
         const response = await _axiosDefault.default.get(`http://localhost:3000/users/${this.get('id')}`);
@@ -520,7 +513,7 @@ class User {
     }
 }
 
-},{"axios":"1IeuP","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}],"1IeuP":[function(require,module,exports) {
+},{"axios":"1IeuP","@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV","./Eventing":"fq8k6"}],"1IeuP":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 
 },{"./lib/axios":"ePOwX"}],"ePOwX":[function(require,module,exports) {
@@ -2108,6 +2101,29 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}]},["fUE9V","7buRX"], "7buRX", "parcelRequired1cb")
+},{}],"fq8k6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Eventing", ()=>Eventing
+);
+class Eventing {
+    on(event, callback) {
+        const handlers = this.events[event] || [];
+        handlers.push(callback);
+        this.events[event] = handlers;
+    }
+    trigger(event) {
+        const handlers = this.events[event];
+        if (!handlers || handlers.length === 0) return;
+        handlers.forEach((callback)=>callback()
+        );
+    }
+    constructor(){
+        this.events = {
+        };
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"ciiiV"}]},["fUE9V","7buRX"], "7buRX", "parcelRequired1cb")
 
 //# sourceMappingURL=index.ac529fda.js.map
