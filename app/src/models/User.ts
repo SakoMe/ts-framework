@@ -30,4 +30,9 @@ export class User {
 	get get() {
 		return this.attribues.get;
 	}
+
+	set(update: Partial<UserProps>): void {
+		this.attribues.set(update);
+		this.trigger('change');
+	}
 }

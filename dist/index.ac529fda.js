@@ -461,14 +461,16 @@ function hmrAcceptRun(bundle, id) {
 },{}],"7buRX":[function(require,module,exports) {
 var _user = require("./models/User");
 const user = new _user.User({
-    name: 'Bob',
-    age: 20
+    id: 1
 });
 console.log(user);
+user.set({
+    name: 'New Name'
+});
 console.log(user.get('name'));
 user.on('change', ()=>console.log('Changed')
-);
-user.trigger('change'); // user.set({ name: 'Changed', age: 999 });
+); // user.trigger('change');
+ // user.set({ name: 'Changed', age: 999 });
  // user.save();
  // const userTWo = new User({ name: 'Jack', age: 100 });
  // userTWo.save();
@@ -505,6 +507,10 @@ class User {
     }
     get get() {
         return this.attribues.get;
+    }
+    set(update) {
+        this.attribues.set(update);
+        this.trigger('change');
     }
 }
 
