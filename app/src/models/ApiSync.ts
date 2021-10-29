@@ -5,7 +5,7 @@ interface HasId {
 }
 
 export class ApiSync<T extends HasId> {
-	constructor(private rootUrl: string) {}
+	constructor(private readonly rootUrl: string) {}
 
 	fetch(id: number): AxiosPromise {
 		return axios.get(`${this.rootUrl}/${id}`);

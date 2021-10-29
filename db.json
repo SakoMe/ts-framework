@@ -9,6 +9,11 @@
       "name": "Super Duper Name",
       "age": 999,
       "id": 2
+    },
+    {
+      "name": "Another",
+      "age": 44,
+      "id": 3
     }
   ]
 }
