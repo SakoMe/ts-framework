@@ -1,34 +1,14 @@
 {
   "users": [
     {
-      "id": 1,
-      "name": "Super Name",
-      "age": 44
-    },
-    {
-      "name": "Super Duper Name",
-      "age": 999,
-      "id": 2
-    },
-    {
-      "name": "Another",
+      "name": "Sarkis",
       "age": 44,
-      "id": 3
+      "id": 1
     },
     {
-      "name": "NAME",
-      "age": 30,
-      "id": 4
-    },
-    {
-      "name": "NAME",
-      "age": 30,
-      "id": 5
-    },
-    {
-      "name": "Hello",
-      "age": 59,
-      "id": 6
+      "name": "Kai Kai",
+      "age": 51,
+      "id": 2
     }
   ]
 }

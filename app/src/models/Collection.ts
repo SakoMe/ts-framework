@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import { Eventing } from './Eventing';
 
 export class Collection<T, K> {
-	private models: T[] = [];
+	public models: T[] = [];
 	private readonly events: Eventing = new Eventing();
 
 	constructor(
@@ -21,8 +21,7 @@ export class Collection<T, K> {
 	fetch(): void {
 		axios.get(this.rootUrl).then((response: AxiosResponse) => {
 			this.models = response.data.map((value: K) => this.deserialize(value));
+			this.trigger('change');
 		});
-
-		this.trigger('change');
 	}
 }
